@@ -7,6 +7,7 @@ package org.snapscript.ui.chrome;
 import java.awt.BorderLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 import java.net.URI;
 
 import javax.swing.JPanel;
@@ -41,7 +42,7 @@ public class ChromeFrame extends BrowserFrame {
     private String errorMsg_ = "";
     private final CefCookieManager cookieManager_;
 
-    public ChromeFrame(ChromeFrameListener listener, URI address, boolean osrEnabled, boolean transparentPaintingEnabled, String cookiePath, String[] args) {
+    public ChromeFrame(ChromeFrameListener listener, URI address, File log, File cache, boolean osrEnabled, boolean transparentPaintingEnabled, String cookiePath, String[] args) {
         CefApp myApp;
         if (CefApp.getState() != CefApp.CefAppState.INITIALIZED) {
             // 1) CefApp is the entry point for JCEF. You can pass
@@ -52,6 +53,21 @@ public class ChromeFrame extends BrowserFrame {
             settings.windowless_rendering_enabled = osrEnabled;
             // try to load URL "about:blank" to see the background color
             settings.background_color = settings.new ColorType(100, 255, 242, 211);
+
+            if(log != null) {
+                try {
+                    settings.log_file = log.getCanonicalPath();
+                } catch(Exception e) {
+                    throw new IllegalArgumentException("Log file " + log + " is invalid", e);
+                }
+            }
+            if(cache != null) {
+                try {
+                    settings.cache_path = cache.getCanonicalPath();
+                } catch(Exception e) {
+                    throw new IllegalArgumentException("Cache path " + cache + " is invalid", e);
+                }
+            }
             myApp = CefApp.getInstance(args, settings);
 
             CefVersion version = myApp.getVersion();

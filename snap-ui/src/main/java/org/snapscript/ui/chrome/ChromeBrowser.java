@@ -37,10 +37,11 @@ public class ChromeBrowser {
                 }
             }
         }
+        URI target = URI.create("http://www.google.com");
         // MainFrame keeps all the knowledge to display the embedded browser
         // frame.
         final ChromeFrameListener listener = new ChromeLogListener();
-        final ChromeFrame frame = new ChromeFrame(listener, URI.create("http://www.google.com"), osrEnabledArg, transparentPaintingEnabledArg, cookiePath, args);
+        final ChromeFrame frame = new ChromeFrame(listener, target, null, null, osrEnabledArg, transparentPaintingEnabledArg, cookiePath, args);
         frame.setSize(800, 600);
         frame.setVisible(true);
 	}

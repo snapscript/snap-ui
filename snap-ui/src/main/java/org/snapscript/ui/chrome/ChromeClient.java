@@ -8,6 +8,7 @@ import org.snapscript.ui.WindowIconLoader;
 import org.snapscript.ui.chrome.load.LibraryLoader;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
@@ -20,12 +21,15 @@ public class ChromeClient implements Client {
 		String address = context.getTarget();
 		String title = context.getTitle();
 		String path = context.getIcon();
+		File logiFle = context.getLogFile();
+		File cachePath = context.getCachePath();
+		URI target = URI.create(address);
 
 		LibraryLoader.loadFrom(folder);
 		WindowIcon icon = WindowIconLoader.loadIcon(path);
 		String[] arguments = context.getArguments();
 		final ChromeFrameListener listener = new ChromeLogListener();
-		final ChromeFrame frame = new ChromeFrame(listener, URI.create(address), false, false, null, arguments);
+		final ChromeFrame frame = new ChromeFrame(listener, target, logiFle, cachePath, false, false, null, arguments);
 		frame.setTitle(title);
 		frame.setSize(800, 600);
 		frame.setVisible(true);
