@@ -9,7 +9,7 @@ import org.snapscript.ui.chrome.load.LibraryLoader;
 public class ChromeBrowser {
 
 	public static void main(String[] list) throws Exception {
-		LibraryLoader.load();
+		LibraryLoader.loadFrom(".cef");
 		show(list);
 	}
 	

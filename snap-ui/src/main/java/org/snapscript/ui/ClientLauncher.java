@@ -12,6 +12,6 @@ public class ClientLauncher {
          .port(URI.create(list[0]).getPort())
          .arguments(list)
          .build();
-		ClientProvider.provide(ClientEngine.JAVAFX).show(context);
+		ClientProvider.provide(ClientEngine.CEF).show(context);
 	}
 }

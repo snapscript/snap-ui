@@ -16,10 +16,12 @@ public class ChromeClient implements Client {
 	@Override
 	@SneakyThrows
 	public void show(ClientContext context) {
-		LibraryLoader.load();
-		String address = context.getTarget();	
+		String folder = context.getFolder();
+		String address = context.getTarget();
 		String title = context.getTitle();
 		String path = context.getIcon();
+
+		LibraryLoader.loadFrom(folder);
 		WindowIcon icon = WindowIconLoader.loadIcon(path);
 		String[] arguments = context.getArguments();
 		final ChromeFrameListener listener = new ChromeLogListener();

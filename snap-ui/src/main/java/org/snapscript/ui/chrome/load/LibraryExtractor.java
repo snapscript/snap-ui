@@ -20,17 +20,7 @@ import org.snapscript.ui.OperatingSystem;
 
 @Slf4j
 public class LibraryExtractor {
-	
-	public static void main(String s[])  throws Exception{
-		LibraryExtractor.extractToHome();
-	}
-	
-	public static File extractToHome() throws Exception {
-		File f = new File(System.getProperty("user.home"), ".cef");
-		extractTo(f);
-		return f;
-	}
-	
+
 	public static File extractTo(File location) throws Exception {
 		OperatingSystem os = OperatingSystem.resolveSystem();
 		listFiles(os).forEach(e -> {
