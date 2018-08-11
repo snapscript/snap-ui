@@ -82,7 +82,7 @@ public class LibraryExtractor {
         } else {
             myPath = Paths.get(uri);
         }
-        return Files.walk(myPath, 2).map(x -> {
+        return Files.walk(myPath, 10).map(x -> {
 	        	return relative(path, myPath, x);
 	        })
 	        .filter(e -> e.resource != null)
