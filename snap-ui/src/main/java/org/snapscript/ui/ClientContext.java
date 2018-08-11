@@ -1,7 +1,5 @@
 package org.snapscript.ui;
 
-import java.io.File;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,11 +7,11 @@ import lombok.Data;
 @Builder
 public class ClientContext {
 	
-	private static final String ICON_PATH = "/resource/img/icon_large.png";
+	private static final String ICON_PATH = "/icon/icon_large.png";
 
-	private final ClientEngine engine;
 	private final String title;
 	private final String host;
+	private final String icon;
 	private final int port;
 	private final boolean debug;
 	private final String[] arguments;
@@ -27,5 +25,9 @@ public class ClientContext {
 	
 	public String[] getArguments(){
 		return arguments != null ? arguments : new String[]{};
+	}
+
+	public String getIcon() {
+		return icon != null ? icon : ICON_PATH;
 	}
 }

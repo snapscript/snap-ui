@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.snapscript.ui.OperatingSystem;
 
 @Slf4j
 public class LibraryExtractor {
@@ -31,7 +32,7 @@ public class LibraryExtractor {
 	}
 	
 	public static File extractTo(File location) throws Exception {
-		LibraryType os = LibraryType.resolveSystem();
+		OperatingSystem os = OperatingSystem.resolveSystem();
 		listFiles(os).forEach(e -> {
 			try{
 				File file = new File(location, e.path);
@@ -68,7 +69,7 @@ public class LibraryExtractor {
 		
 	}
 	
-	public static List<Entry> listFiles(LibraryType os) throws Exception {
+	public static List<Entry> listFiles(OperatingSystem os) throws Exception {
         URL root = locateRoot(os);
         if(root == null) {
         	throw new IllegalArgumentException("No library for " + os);
@@ -90,7 +91,7 @@ public class LibraryExtractor {
   
 	}
 	
-	public static URL locateRoot(LibraryType os) {
+	public static URL locateRoot(OperatingSystem os) {
 		String name = os.name().toLowerCase();
         URL uri = LibraryExtractor.class.getResource(name);
         if(uri == null) {

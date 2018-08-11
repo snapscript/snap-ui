@@ -1,13 +1,13 @@
-package org.snapscript.ui.chrome.load;
+package org.snapscript.ui;
 
-public enum LibraryType {
+public enum OperatingSystem {
    WINDOWS("win64"),
    MAC("mac"),
    LINUX("linux64");
 
    private final String code;
 
-   private LibraryType(String code) {
+   private OperatingSystem(String code) {
       this.code = code;
    }
    
@@ -27,13 +27,15 @@ public enum LibraryType {
       return this == MAC;
    }
    
-   public static LibraryType resolveSystem() {
-      LibraryType[] values = LibraryType.values();
+   public static OperatingSystem resolveSystem() {
+      OperatingSystem[] values = OperatingSystem.values();
       String system = System.getProperty("os.name");
       String token = system.toLowerCase();
       
-      for(LibraryType os : values) {
-         if(token.startsWith(os.name().toLowerCase())) {
+      for(OperatingSystem os : values) {
+         String name = os.name().toLowerCase();
+
+         if(token.startsWith(name)) {
             return os;
          }
       }

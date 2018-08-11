@@ -8,11 +8,10 @@ public class ClientLauncher {
       ClientContext context = ClientContext.builder()
          .debug(true)
          .title("Browser")
-         .engine(ClientEngine.CEF)
          .host(URI.create(list[0]).getHost())
          .port(URI.create(list[0]).getPort())
          .arguments(list)
          .build();
-		ClientProvider.provide().show(context);
+		ClientProvider.provide(ClientEngine.JAVAFX).show(context);
 	}
 }
