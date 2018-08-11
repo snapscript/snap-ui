@@ -14,7 +14,7 @@ public class LibraryLoader {
 	        Field field = ClassLoader.class.getDeclaredField("usr_paths");
 	        
 	        field.setAccessible(true);
-	        field.set(null, path);
+	        field.set(null, path);	        
 		}catch(Exception e){
 			throw new IllegalStateException(e);
 		}

@@ -35,6 +35,9 @@ public class LibraryExtractor {
 		listFiles(os).forEach(e -> {
 			try{
 				File file = new File(location, e.path);
+				if(file.getName().endsWith(".jar")) {
+					LibraryClassPathExtender.updateClassPath(file.getCanonicalPath());
+				}
 				log.info("Writing to "+file.getCanonicalPath());
 				writeTo(e.resource, file);
 			} catch(Exception ex){

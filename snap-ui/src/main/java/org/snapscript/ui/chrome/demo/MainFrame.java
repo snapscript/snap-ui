@@ -2,7 +2,7 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-package org.snapscript.ui.chrome;
+package org.snapscript.ui.chrome.demo;
 
 import java.awt.BorderLayout;
 import java.io.File;
@@ -34,6 +34,7 @@ import org.snapscript.ui.chrome.handler.KeyboardHandler;
 import org.snapscript.ui.chrome.handler.MessageRouterHandler;
 import org.snapscript.ui.chrome.handler.MessageRouterHandlerEx;
 import org.snapscript.ui.chrome.handler.RequestHandler;
+import org.snapscript.ui.chrome.ui.BrowserFrame;
 import org.snapscript.ui.chrome.ui.ControlPanel;
 import org.snapscript.ui.chrome.ui.MenuBar;
 import org.snapscript.ui.chrome.ui.StatusPanel;

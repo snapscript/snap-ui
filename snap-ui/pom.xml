@@ -27,6 +27,7 @@
       <groupId>org.cef</groupId>
       <artifactId>jcef-win64</artifactId>
       <version>1.0</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
@@ -51,13 +52,31 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <finalName>client</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <archive>
+            <manifest>
+                <mainClass>org.snapscript.ui.ClientLauncher</mainClass>
+            </manifest>
+          </archive>      
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>        
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>maven-eclipse-repo</id>
-      <url>http://maven-eclipse.github.io/maven</url>
-    </repository>
-  </repositories>
 </project>
 
