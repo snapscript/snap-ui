@@ -1,5 +1,6 @@
 package org.snapscript.ui.chrome.load;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -11,8 +12,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ import org.snapscript.ui.OperatingSystem;
 public class LibraryExtractor {
 
    public static final String CEF_VERSION = "3.3396.1775.g5340bb0";
+   public static final String CEF_REQUIRED_LIST = "required.list";
 
    public static File extractTo(File location) throws Exception {
       File root = new File(location, "cef/" + CEF_VERSION);
@@ -85,49 +89,63 @@ public class LibraryExtractor {
 
    private static List<LibraryDependency> listFiles(OperatingSystem os) throws Exception {
       String path = "/" + os.name().toLowerCase();
-      Path root = locateRoot(path);
+      List<String> resources = locateRequiredResources(path);
 
-      return Files.walk(root, 10).map(dependency -> loadDependency(path, root, dependency))
+      return resources.stream()
+              .map(resource -> loadDependency(path, resource))
               .filter(dependency -> dependency.isValid())
               .collect(Collectors.toList());
    }
 
    @SneakyThrows
-   private static Path locateRoot(String path) {
-      URL root = locateResource(path);
+   private static List<String> locateRequiredResources(String path) {
+      URL list = locateResource(path + "/" + CEF_REQUIRED_LIST);
 
-      if (root == null) {
+      if (list == null) {
          throw new IllegalArgumentException("No library found at " + path);
       }
-      URI uri = root.toURI();
+      InputStream source = list.openStream();
 
-      if (uri.getScheme().equals("jar")) {
-         FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-         return  fileSystem.getPath(path);
+      try {
+         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+         byte[] chunk = new byte[1024];
+         int count = 0;
+
+         while ((count = source.read(chunk)) != -1) {
+            buffer.write(chunk);
+         }
+         String[] lines = buffer.toString().split("\\r?\\n");
+         return Arrays.asList(lines)
+                 .stream()
+                 .filter(Objects::nonNull)
+                 .map(text -> text.trim())
+                 .filter(text -> !text.isEmpty() && !text.startsWith("#"))
+                 .collect(Collectors.toList());
+      } finally {
+         source.close();
       }
-      return Paths.get(uri);
    }
 
    private static URL locateResource(String path) {
-      URL resource = LibraryExtractor.class.getResource(path);
+      String normal = path.replace("//", "/");
+      URL resource = LibraryExtractor.class.getResource(normal);
 
       if (resource == null) {
-         if (path.startsWith("/")) {
-            path = path.substring(1);
+         if (normal.startsWith("/")) {
+            normal = normal.substring(1);
          } else {
-            path = "/" + path;
+            normal = "/" + normal;
          }
-         return LibraryExtractor.class.getResource(path);
+         return LibraryExtractor.class.getResource(normal);
       }
       return resource;
    }
 
 
-   private static LibraryDependency loadDependency(String prefix, Path from, Path path) {
-      String relative = from.relativize(path).toString().replace(File.separatorChar, '/');
-      URL resource = locateResource(prefix + "/" + relative);
-
-      return new LibraryDependency(resource, relative);
+   private static LibraryDependency loadDependency(String prefix, String path) {
+      String normal = path.startsWith("/") ? path.substring(1) : path;
+      URL resource = locateResource(prefix + "/" + normal);
+      return new LibraryDependency(resource, normal);
    }
 
    @Data
