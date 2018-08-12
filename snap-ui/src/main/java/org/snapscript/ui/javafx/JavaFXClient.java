@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.snapscript.ui.Client;
 import org.snapscript.ui.ClientContext;
+import org.snapscript.ui.ClientControl;
 import org.snapscript.ui.WindowIcon;
 import org.snapscript.ui.WindowIconLoader;
 
@@ -26,7 +27,7 @@ import java.io.InputStream;
 public class JavaFXClient implements Client {
 
    @Override
-   public void show(ClientContext context) {
+   public ClientControl show(ClientContext context) {
       try {
          JavaFXApplication.launch(context);
       }catch(Exception e) {
@@ -35,18 +36,25 @@ public class JavaFXClient implements Client {
       } finally {
          System.exit(0);
       }
+      return () -> JavaFXApplication.showDebugger();
    }
 
    public static class JavaFXApplication extends Application {
 
       private static ClientContext context;
-      private JavaFXRegion browser;
-      private Scene scene;
+      private static JavaFXRegion browser;
+      private static Scene scene;
 
       public static void launch(ClientContext context) {
          String[] arguments = context.getArguments();
          JavaFXApplication.context = context;
          launch(arguments);
+      }
+
+      public static void showDebugger() {
+         if(browser != null) {
+            browser.showDebugger();;
+         }
       }
 
       @Override

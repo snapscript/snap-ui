@@ -1,5 +1,5 @@
 package org.snapscript.ui;
 
 public interface Client {
-	void show(ClientContext context);
+	ClientControl show(ClientContext context);
 }

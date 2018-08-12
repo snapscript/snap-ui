@@ -3,6 +3,7 @@ package org.snapscript.ui.chrome;
 import lombok.SneakyThrows;
 import org.snapscript.ui.Client;
 import org.snapscript.ui.ClientContext;
+import org.snapscript.ui.ClientControl;
 import org.snapscript.ui.WindowIcon;
 import org.snapscript.ui.WindowIconLoader;
 import org.snapscript.ui.chrome.load.LibraryLoader;
@@ -17,7 +18,7 @@ public class ChromeClient implements Client {
 
 	@Override
 	@SneakyThrows
-	public void show(ClientContext context) {
+	public ClientControl show(ClientContext context) {
 		String folder = context.getFolder();
 		String address = context.getTarget();
 		String title = context.getTitle();
@@ -44,6 +45,7 @@ public class ChromeClient implements Client {
 		if(context.isDebug()) {
 			SwingUtilities.invokeLater(() -> frame.showDevTools());
 		}
+		return () -> SwingUtilities.invokeLater(() -> frame.showDevTools());
 	}
 
 }
