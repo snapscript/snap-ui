@@ -7,6 +7,7 @@ import org.snapscript.ui.WindowIcon;
 import org.snapscript.ui.WindowIconLoader;
 import org.snapscript.ui.chrome.load.LibraryLoader;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.URI;
@@ -39,6 +40,9 @@ public class ChromeClient implements Client {
 			Image image = Toolkit.getDefaultToolkit().getImage(resource);
 
 			frame.setIconImage(image);
+		}
+		if(context.isDebug()) {
+			SwingUtilities.invokeLater(() -> frame.showDevTools());
 		}
 	}
 
