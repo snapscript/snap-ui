@@ -17,7 +17,7 @@ public class KeyboardHandler extends CefKeyboardHandlerAdapter {
             // OnKeyEvent() method the space key would cause the window to scroll in
             // addition to showing the alert box.
 
-            
+
 //            if (event.type == CefKeyEvent.EventType.KEYEVENT_RAWKEYDOWN) {
 //                browser.executeJavaScript("alert('You pressed the space bar!');", "", 0);
 //            }
