@@ -4,15 +4,19 @@
 
 package org.snapscript.ui.chrome.ui;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.cef.CefApp;
 import org.cef.browser.CefBrowser;
 import org.cef.handler.CefLifeSpanHandlerAdapter;
+import org.snapscript.ui.ClientCloseListener;
 
 public class BrowserFrame extends JFrame {
+    private final Set<ClientCloseListener> closeListeners = new CopyOnWriteArraySet<>();
     private boolean isClosed_ = false;
     private CefBrowser browser_ = null;
     private static int browserCount_ = 0;
@@ -47,7 +51,7 @@ public class BrowserFrame extends JFrame {
         //      System.exit(0) when the state changes to CefAppState.TERMINATED.
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {
+            public void windowClosing(WindowEvent event) {
                 if (browser_ == null) {
                     // If there's no browser we can dispose immediately.
                     isClosed_ = true;
@@ -76,7 +80,24 @@ public class BrowserFrame extends JFrame {
                     dispose();
                 }
             }
+            @Override
+            public void windowClosed(WindowEvent event) {
+                for(ClientCloseListener closeListener : closeListeners) {
+                    try {
+                        System.out.println("BrowserFrame.windowClosed ClientCloseListener.onClose");
+                        closeListener.onClose();
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         });
+    }
+
+    public void addCloseListener(ClientCloseListener listener) {
+        if(closeListeners != null) {
+            closeListeners.add(listener);
+        }
     }
 
     public void setBrowser(CefBrowser browser) {

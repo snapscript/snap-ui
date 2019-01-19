@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.snapscript.ui.Client;
+import org.snapscript.ui.ClientCloseListener;
 import org.snapscript.ui.ClientContext;
 import org.snapscript.ui.ClientControl;
 import org.snapscript.ui.WindowIcon;
@@ -21,6 +22,9 @@ import org.snapscript.ui.WindowIconLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Slf4j
 @SuppressWarnings("restriction")
@@ -29,18 +33,28 @@ public class JavaFXClient implements Client {
    @Override
    public ClientControl show(ClientContext context) {
       try {
-         JavaFXApplication.launch(context);
+         CompletableFuture.runAsync(() -> {
+            JavaFXApplication.launch(context);
+         });
       }catch(Exception e) {
-         e.printStackTrace();
+         log.info("Could not create client", e);
          throw new IllegalStateException("Could not create browser", e);
-      } finally {
-         System.exit(0);
       }
-      return () -> JavaFXApplication.showDebugger();
+      return new ClientControl() {
+         @Override
+         public void registerListener(ClientCloseListener listener) {
+            JavaFXApplication.registerListener(listener);
+         }
+         @Override
+         public void showDebugger() {
+            JavaFXApplication.showDebugger();
+         }
+      };
    }
 
    public static class JavaFXApplication extends Application {
 
+      private static final Set<ClientCloseListener> closeListeners = new CopyOnWriteArraySet<>();
       private static ClientContext context;
       private static JavaFXRegion browser;
       private static Scene scene;
@@ -51,10 +65,25 @@ public class JavaFXClient implements Client {
          launch(arguments);
       }
 
+      public static void registerListener(ClientCloseListener listener) {
+         closeListeners.add(listener);
+      }
+
       public static void showDebugger() {
          if(browser != null) {
             browser.showDebugger();;
          }
+      }
+
+      public void stop() {
+         for(ClientCloseListener closeListener : closeListeners) {
+            try {
+               closeListener.onClose();
+            } catch(Exception e) {
+               log.info("Could not notify of close", e);
+            }
+         }
+         System.exit(0);
       }
 
       @Override

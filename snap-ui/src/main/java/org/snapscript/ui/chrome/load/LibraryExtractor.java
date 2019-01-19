@@ -5,15 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -56,16 +49,16 @@ public class LibraryExtractor {
             if (parent.isFile()) {
                parent.delete();
             }
-            log.info("Writing to " + file);
+            log.debug("Writing to {}", file);
             parent.mkdirs();
 
             if(file.isDirectory()) {
-               log.info("Ignoring directory " + file);
+               log.debug("Ignoring directory {}", file);
             } else {
                writeTo(resource, file);
             }
          } catch (Exception e) {
-            log.error("Error writing to " + file, e);
+            log.error("Error writing to {}", file, e);
          }
       });
    }

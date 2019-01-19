@@ -1,18 +1,19 @@
 package org.snapscript.ui.chrome;
 
-import lombok.SneakyThrows;
-import org.snapscript.ui.Client;
-import org.snapscript.ui.ClientContext;
-import org.snapscript.ui.ClientControl;
-import org.snapscript.ui.WindowIcon;
-import org.snapscript.ui.WindowIconLoader;
-import org.snapscript.ui.chrome.load.LibraryLoader;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+
+import lombok.SneakyThrows;
+import org.snapscript.ui.Client;
+import org.snapscript.ui.ClientCloseListener;
+import org.snapscript.ui.ClientContext;
+import org.snapscript.ui.ClientControl;
+import org.snapscript.ui.WindowIcon;
+import org.snapscript.ui.WindowIconLoader;
+import org.snapscript.ui.chrome.load.LibraryLoader;
 
 public class ChromeClient implements Client {
 
@@ -45,7 +46,16 @@ public class ChromeClient implements Client {
 		if(context.isDebug()) {
 			SwingUtilities.invokeLater(() -> frame.showDevTools());
 		}
-		return () -> SwingUtilities.invokeLater(() -> frame.showDevTools());
+		return new ClientControl() {
+			@Override
+			public void registerListener(ClientCloseListener listener) {
+				frame.addCloseListener(listener);
+			}
+			@Override
+			public void showDebugger() {
+				SwingUtilities.invokeLater(() -> frame.showDevTools());
+			}
+		};
 	}
 
 }
