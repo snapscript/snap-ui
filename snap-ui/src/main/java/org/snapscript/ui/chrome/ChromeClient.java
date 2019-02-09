@@ -20,6 +20,8 @@ public class ChromeClient implements Client {
 	@Override
 	@SneakyThrows
 	public ClientControl show(ClientContext context) {
+		int width = context.getWidth();
+		int height = context.getHeight();
 		String folder = context.getFolder();
 		String address = context.getTarget();
 		String title = context.getTitle();
@@ -34,7 +36,7 @@ public class ChromeClient implements Client {
 		final ChromeFrameListener listener = new ChromeLogListener();
 		final ChromeFrame frame = new ChromeFrame(listener, target, logiFle, cachePath, false, false, null, arguments);
 		frame.setTitle(title);
-		frame.setSize(800, 600);
+		frame.setSize(width, height);
 		frame.setVisible(true);
 
 		if (icon != null) {

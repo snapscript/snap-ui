@@ -3,6 +3,7 @@ package org.snapscript.ui;
 import lombok.Builder;
 import lombok.Data;
 
+import java.awt.*;
 import java.io.File;
 import java.net.URI;
 
@@ -19,9 +20,33 @@ public class ClientContext {
 	private final String title;
 	private final String host;
 	private final String icon;
+	private final int width;
+	private final int height;
 	private final int port;
 	private final boolean debug;
 	private final String[] arguments;
+
+	public int getWidth() {
+		if(width <= 0) {
+			try {
+				return Toolkit.getDefaultToolkit().getScreenSize().width / 2;
+			} catch(Exception e) {
+				return 800;
+			}
+		}
+		return width;
+	}
+
+	public int getHeight() {
+		if(height <= 0) {
+			try {
+				return Toolkit.getDefaultToolkit().getScreenSize().height / 2;
+			} catch(Exception e) {
+				return 600;
+			}
+		}
+		return height;
+	}
 
 	public String getTarget() {
 		if(port != -1 && port != 80 && port != 0) {
